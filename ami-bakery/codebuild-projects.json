@@ -1,0 +1,60 @@
+{
+    "projects": [
+        {
+            "name": "AMI_builder",
+            "arn": "arn:aws:codebuild:eu-west-1:210372884420:project/AMI_builder",
+            "description": "AMI bakery",
+            "source": {
+                "type": "GITHUB",
+                "location": "https://github.com/CRUKorg/psychic-winner",
+                "gitCloneDepth": 1,
+                "buildspec": "ami-bakery/buildspec.yml",
+                "reportBuildStatus": false,
+                "insecureSsl": false
+            },
+            "secondarySources": [],
+            "artifacts": {
+                "type": "NO_ARTIFACTS"
+            },
+            "secondaryArtifacts": [],
+            "cache": {
+                "type": "NO_CACHE"
+            },
+            "environment": {
+                "type": "LINUX_CONTAINER",
+                "image": "aws/codebuild/standard:2.0",
+                "computeType": "BUILD_GENERAL1_SMALL",
+                "environmentVariables": [],
+                "privilegedMode": true,
+                "imagePullCredentialsType": "CODEBUILD"
+            },
+            "serviceRole": "arn:aws:iam::210372884420:role/service-role/codebuild-AMI_builder-service-role",
+            "timeoutInMinutes": 60,
+            "queuedTimeoutInMinutes": 480,
+            "encryptionKey": "arn:aws:kms:eu-west-1:210372884420:alias/aws/s3",
+            "tags": [
+                {
+                    "key": "owner",
+                    "value": "sysops"
+                }
+            ],
+            "created": 1553600972.173,
+            "lastModified": 1553600972.173,
+            "badge": {
+                "badgeEnabled": true,
+                "badgeRequestUrl": "https://codebuild.eu-west-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiaVo5RGZpcTN6QW5oTjkzSzE4aTFjWVYva01lSzB2dnRkd1lRcU1MVmdNN29yREpzZDVNZXJjb3kxYitBejNESXREVlYzL0dJTHR2S0VPeHl1cVd0ZTk4PSIsIml2UGFyYW1ldGVyU3BlYyI6IkpleVdLSURmYkdBQVU4M2kiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master"
+            },
+            "logsConfig": {
+                "cloudWatchLogs": {
+                    "status": "ENABLED",
+                    "groupName": "CodeBuild",
+                    "streamName": "AMI_Builder"
+                },
+                "s3Logs": {
+                    "status": "DISABLED"
+                }
+            }
+        }
+    ],
+    "projectsNotFound": []
+}

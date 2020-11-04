@@ -1,0 +1,16 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+  pre_build:
+    commands:
+      - curl --disable --location --silent --show-error --output packer.zip https://releases.hashicorp.com/packer/1.4.3/packer_1.4.3_linux_amd64.zip && unzip packer.zip && echo "Packer installed."
+      - ./packer validate dev/ami-bakery/ubuntu-bionic-patched_packer-template.json
+  build:
+    commands:
+      - echo "Building HashiCorp Packer template"
+      - ./packer build -color=false ami-bakery/ubuntu-bionic-patched_packer-template.json
+  post_build:
+    commands:
+      - echo "HashiCorp Packer build completed on `date`"

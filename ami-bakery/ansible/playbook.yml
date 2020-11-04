@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: true
+  become: yes
+  roles:
+    - common
+    - dev-sec.os-hardening
+  vars:
+    ufw_default_input_policy: "ACCEPT"
+    ufw_default_output_policy: "ACCEPT"
+    ufw_default_forward_policy: "ACCEPT"
+    sysctl_overwrite:
+      kernel.sysrq: 0

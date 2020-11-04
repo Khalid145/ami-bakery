@@ -1,0 +1,55 @@
+{
+    "variables": {
+        "aws_region": "{{env `AWS_REGION`}}",
+        "aws_ami_name": "ubuntu-bionic_{{isotime \"2006-01-02T030405Z\"}}",
+        "aws_ami_description": "Patched Ubuntu LTS Linux",
+        "aws_vpc_id": "vpc-affe27cb",
+        "aws_subnet_id": "subnet-be1edbe6"
+    },
+
+    "builders": [{
+        "type": "amazon-ebs",
+        "region": "{{user `aws_region`}}",
+        "instance_type": "t2.micro",
+        "ssh_username": "ubuntu",
+        "ami_name": "{{user `aws_ami_name`}}",
+        "ami_description": "{{user `aws_ami_description`}}",
+        "associate_public_ip_address": "true",
+        "source_ami_filter": {
+            "filters": {
+                "architecture": "x86_64",
+                "virtualization-type": "hvm",
+                "root-device-type": "ebs",
+                "name": "ubuntu/images/*/ubuntu-bionic-18.04*"
+            },
+            "owners": ["099720109477"],
+            "most_recent": true
+        },
+        "vpc_id": "{{user `aws_vpc_id`}}",
+        "subnet_id": "{{user `aws_subnet_id`}}"
+    }],
+
+    "provisioners": [{
+            "type": "shell",
+            "inline": [
+                "while [ $(grep --count ec2 /etc/apt/sources.list) -eq 0 ] ; do echo 'waiting for cloud-init to update sources.list' ; sleep 1; done",
+                "cat /etc/issue",
+                "uname --all",
+                "sudo apt-get --quiet update",
+                "sudo DEBIAN_FRONTEND=noninteractive apt-get --quiet --assume-yes --no-install-recommends --show-upgraded upgrade",
+                "sudo DEBIAN_FRONTEND=noninteractive apt-get --quiet --assume-yes --no-install-recommends install python3-pip python3-setuptools",
+                "sudo pip3 install 'ansible>=2.8.0,<3.0'"
+            ]
+        },
+        {
+            "type": "ansible-local",
+            "command": "PYTHONUNBUFFERED=1 ansible-playbook",
+            "galaxy_file": "ansible/requirements.yml",
+            "playbook_file": "ansible/playbook.yml",
+            "playbook_dir": "ansible",
+            "role_paths": [
+                "ansible/roles/common"
+            ]
+        }
+    ]
+}
